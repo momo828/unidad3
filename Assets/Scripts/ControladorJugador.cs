@@ -14,16 +14,31 @@ public class ControladorJugador : MonoBehaviour
     private Rigidbody2D rb;
     private float movimientoX;
     private bool estaEnSuelo;
+    
+    // Agregamos la referencia al SpriteRenderer
+    private SpriteRenderer spriteRenderer;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        // Obtenemos el componente SpriteRenderer al inicio
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     void Update()
     {
         // Movimiento horizontal
         movimientoX = Input.GetAxisRaw("Horizontal");
+
+        // Girar al personaje usando SpriteRenderer (FlipX)
+        if (movimientoX < 0) // Si se mueve a la izquierda
+        {
+            spriteRenderer.flipX = true;
+        }
+        else if (movimientoX > 0) // Si se mueve a la derecha
+        {
+            spriteRenderer.flipX = false;
+        }
 
         // Verificamos si tocamos el suelo
         if (detectorSuelo != null)
