@@ -11,61 +11,95 @@ public class ControladorJugador : MonoBehaviour
     public float radioDeteccion = 0.2f;
     public LayerMask capaSuelo;
 
+    [Header("Disparo")]
+    public GameObject prefabBala; // Aquí pondremos la plantilla de la bala
+    public Transform puntoDisparo; // De dónde sale la bala
+    public float tiempoEntreDisparos = 0.25f; // Previene lag por spam de botones
+    private float ultimoDisparo;
+
     private Rigidbody2D rb;
     private float movimientoX;
     private bool estaEnSuelo;
     
-    // Agregamos la referencia al SpriteRenderer
     private SpriteRenderer spriteRenderer;
+    private Animator anim; // El "cerebro" de las animaciones
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        // Obtenemos el componente SpriteRenderer al inicio
         spriteRenderer = GetComponent<SpriteRenderer>();
+        anim = GetComponent<Animator>(); // Lo conectamos al inicio
     }
 
     void Update()
     {
-        // Movimiento horizontal
         movimientoX = Input.GetAxisRaw("Horizontal");
 
-        // Girar al personaje usando SpriteRenderer (FlipX)
-        if (movimientoX < 0) // Si se mueve a la izquierda
+    
+        if (movimientoX < 0)
         {
             spriteRenderer.flipX = true;
+            anim.SetBool("caminando", true); // Activa caminar
         }
-        else if (movimientoX > 0) // Si se mueve a la derecha
+        else if (movimientoX > 0)
         {
             spriteRenderer.flipX = false;
+            anim.SetBool("caminando", true); // Activa caminar
+        }
+        else
+        {
+            anim.SetBool("caminando", false); 
         }
 
-        // Verificamos si tocamos el suelo
+        
         if (detectorSuelo != null)
         {
             estaEnSuelo = Physics2D.OverlapCircle(detectorSuelo.position, radioDeteccion, capaSuelo);
         }
 
-        // Detectar si se presiona la Barra Espaciadora y el jugador está en el suelo
         if (Input.GetButtonDown("Jump") && estaEnSuelo)
         {
             Saltar();
+        }
+
+        
+        if (Input.GetButtonDown("Fire1") && Time.time > ultimoDisparo + tiempoEntreDisparos)
+        {
+            Disparar();
         }
     }
 
     void FixedUpdate()
     {
-        // Aplicamos la velocidad horizontal manteniendo la fuerza vertical
         rb.linearVelocity = new Vector2(movimientoX * velocidad, rb.linearVelocity.y);
     }
 
     void Saltar()
     {
-        // Aplicamos un impulso directo hacia arriba
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, fuerzaSalto);
     }
 
-    // Dibuja un círculo rojo en la ventana Scene para visualizar el detector de suelo
+    void Disparar()
+    {
+        ultimoDisparo = Time.time;
+        
+        
+        anim.SetTrigger("disparar");
+
+      
+        if (prefabBala != null && puntoDisparo != null)
+        {
+            GameObject balaNueva = Instantiate(prefabBala, puntoDisparo.position, Quaternion.identity);
+            BalaScript scriptBala = balaNueva.GetComponent<BalaScript>();
+            
+            
+            if (scriptBala != null)
+            {
+                scriptBala.ConfigurarDireccion(spriteRenderer.flipX);
+            }
+        }
+    }
+
     private void OnDrawGizmosSelected()
     {
         if (detectorSuelo != null)
