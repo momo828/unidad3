@@ -1,0 +1,31 @@
+{
+  "project_info": {
+    "project_number": "347826294597",
+    "project_id": "pork-7b1a8",
+    "storage_bucket": "pork-7b1a8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:347826294597:ios:2c52449b4f2f51db16f82c",
+        "android_client_info": {
+          "package_name": "com.DefaultCompany.2D-URP"
+        }
+      },
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVi6g5cLmpYXPYCMjV665P4mpescIXAtc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 0
+        },
+        "appinvite_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
